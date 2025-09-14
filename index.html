@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技创新官网</title>
+    <link rel="icon" href="https://gpo.saobby.com/i/XlQ1PmuU5UPnej02.webp" type="image/webp">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background-color: #ffffff;
+            color: #252525;
+            overflow-x: hidden;
+            transition: background-color 0.3s;
+        }
+        .page {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .page.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 16px;
+            z-index: 50;
+            margin: 0 auto;
+            max-width: 1280px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .sticky-nav.scrolled {
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        .nav-container {
+            padding: 0 16px;
+        }
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo-icon {
+            background-color: rgba(165, 210, 150, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+            margin-right: 8px;
+        }
+        .logo-icon img {
+            height: 24px;
+            width: auto;
+        }
+        .logo-text {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: #252525;
+            letter-spacing: -0.025em;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            margin-left: 40px;
+        }
+        .nav-item {
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #252525;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            background-color: rgba(165, 210, 150, 0.2);
+            color: #a5d296;
+            font-weight: 600;
+        }
+        .nav-item:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .main-content {
+            padding-top: 72px;
+        }
+        .home-page {
+            min-height: 100vh;
+            padding-top: 72px;
+        }
+        .home-content {
+            text-align: center;
+            margin-top: 32px;
+            margin-bottom: 24px;
+        }
+        .home-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #252525;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        .home-subtitle {
+            font-size: 1.5rem;
+            color: #a5d296;
+            font-weight: 500;
+        }
+        .announcements-container {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+            margin-bottom: 48px;
+        }
+        @media (max-width: 768px) {
+            .announcements-container {
+                flex-direction: column;
+            }
+        }
+        .announcement-card, .activity-card {
+            flex: 1;
+            min-width: 300px;
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .announcement-title, .activity-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #252525;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .announcement-title::before, .activity-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #a5d296;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .announcement-content, .activity-content {
+            color: #666;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-align: center;
+        }
+        .announcement-content p, .activity-content p {
+            margin-bottom: 16px;
+        }
+        .announcement-content p:last-child, .activity-content p:last-child {
+            margin-bottom: 0;
+        }
+        .section-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            text-align: center;
+            color: #252525;
+            margin-bottom: 48px;
+        }
+        .works-page, .contact-page, .collaboration-page, .service-page {
+            padding-top: 72px;
+            padding-bottom: 48px;
+        }
+        .cards-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+        .service-page .cards-grid {
+            grid-template-columns: 1fr;
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .card-icon {
+            background-color: rgba(165, 210, 150, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+            margin-right: 12px;
+        }
+        .card-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #a5d296;
+            border-radius: 50%;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #252525;
+        }
+        .card-list {
+            list-style: none;
+        }
+        .card-list-item {
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            border-left: 2px solid rgba(165, 210, 150, 0.3);
+            transition: all 0.2s;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+        .card-list-item:hover {
+            background-color: rgba(165, 210, 150, 0.05);
+        }
+        .card-list-bullet {
+            width: 8px;
+            height: 8px;
+            background-color: #a5d296;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .card-note {
+            font-size: 0.875rem;
+            color: #666;
+            font-style: italic;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(225, 225, 225, 0.5);
+        }
+        .contact-cards {
+            max-width: 768px;
+            margin: 0 auto;
+        }
+        .single-card {
+            max-width: 768px;
+            margin: 0 auto 24px;
+        }
+        .contact-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #252525;
+            margin-bottom: 8px;
+        }
+        .contact-detail {
+            color: #666;
+        }
+        footer {
+            background-color: rgba(245, 245, 245, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.7);
+            padding: 24px 0;
+            margin-top: 32px;
+        }
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+            text-align: center;
+            color: #666;
+            font-size: 0.875rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .footer-link {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-link:hover {
+            color: #252525;
+        }
+        .version-log {
+            color: #a5d296;
+            cursor: pointer;
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        .version-log:hover {
+            color: #8bc34a;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .modal.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #252525;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .modal-content {
+            color: #666;
+            line-height: 1.6;
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            color: #252525;
+            transform: rotate(90deg);
+        }
+        .service-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        .service-card {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #252525;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .textarea-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .service-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 1rem;
+            resize: vertical;
+        }
+        .service-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .service-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .service-btn:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .encode-btn {
+            color: #252525;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+        }
+        .decode-btn {
+            color: #252525;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+        }
+        .result-container {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        .result-text {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-size: 1rem;
+            resize: none;
+        }
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #a5d296;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        .copy-notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <nav class="sticky-nav">
+        <div class="nav-container">
+            <div class="nav-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <img src="https://gpo.saobby.com/i/XlQ1PmuU5UPnej02.webp" alt="Logo">
+                    </div>
+                    <span class="logo-text">科技创新</span>
+                </div>
+                <div class="nav-links">
+                    <div class="nav-item active" data-page="home">首页</div>
+                    <div class="nav-item" data-page="works">精选</div>
+                    <div class="nav-item" data-page="service">工具</div>
+                    <div class="nav-item" data-page="contact">联系方式</div>
+                    <div class="nav-item" data-page="collaboration">合作项目</div>
+                    <div class="nav-item" data-page="about">关于</div>
+                </div>
+                <div class="nav-actions">
+                    <button class="mobile-menu-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="main-content">
+        <div id="home" class="page home-page active">
+            <div class="home-content">
+                <h1 class="home-title">欢迎来到科技创新的官网</h1>
+                <p class="home-subtitle">一起科技创新吧！</p>
+            </div>
+            <div class="announcements-container">
+                <div class="announcement-card">
+                    <h3 class="announcement-title">官方公告</h3>
+                    <div class="announcement-content">
+                        <p>科技创新坚决反对一切违规扩展、作品、开发者。坚决反对一切通过违规手段偷币、偷关注、偷点赞、偷收藏等违规行为。</p>
+                    </div>
+                </div>
+                <div class="activity-card">
+                    <h3 class="activity-title">活动通知</h3>
+                    <div class="activity-content">
+                        <p>暂无活动</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="works" class="page works-page" style="display: none;">
+            <div class="cards-container">
+                <h2 class="section-title">科技创新的精选作品</h2>
+                <div class="cards-grid">
+                    <!-- Scratch 作品 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <div class="card-dot"></div>
+                            </div>
+                            <h3 class="card-title">Scratch作品</h3>
+                        </div>
+                        <ul class="card-list">
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                缤纷绘画
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                Copilot 模拟
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                共创 AI
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                Windows 模拟
+                            </li>
+                        </ul>
+                        <p class="card-note">请前往共创世界科技创新的主页试玩作品</p>
+                    </div>
+                    <!-- 文章 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <div class="card-dot"></div>
+                            </div>
+                            <h3 class="card-title">文章</h3>
+                        </div>
+                        <ul class="card-list">
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                没用的教程
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                无聊的科普
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                小众的神应用分享
+                            </li>
+                        </ul>
+                        <p class="card-note">请前往 404 社区"文章"页面浏览</p>
+                    </div>
+                    <!-- 积木扩展 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <div class="card-dot"></div>
+                            </div>
+                            <h3 class="card-title">积木扩展</h3>
+                        </div>
+                        <ul class="card-list">
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                高级交互弹窗
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                语音转文字
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                在线播放音乐
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                文件下载
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                网页跳转
+                            </li>
+                            <li class="card-list-item">
+                                <span class="card-list-bullet"></span>
+                                发送系统消息
+                            </li>
+                        </ul>
+                        <p class="card-note">请在共创世界素材集市搜索"科技创新或 404 社区"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="contact" class="page contact-page" style="display: none;">
+            <div class="cards-container">
+                <h2 class="section-title">联系我们</h2>
+                <div class="contact-cards">
+                    <div class="card single-card">
+                        <h3 class="contact-title">官方 QQ 群</h3>
+                        <p class="contact-detail">群号：1004706370</p>
+                    </div>
+                    <div class="card single-card">
+                        <h3 class="contact-title">官方客服</h3>
+                        <p class="contact-detail">公众号：科技创新星球</p>
+                    </div>
+                    <div class="card single-card">
+                        <h3 class="contact-title">GitHub 账号</h3>
+                        <p class="contact-detail">账号名称：kejicx</p>
+                    </div>
+                    <div class="card single-card">
+                        <h3 class="contact-title">邮箱地址</h3>
+                        <p class="contact-detail">kejicxmail@163.com</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="collaboration" class="page collaboration-page" style="display: none;">
+            <div class="cards-container">
+                <h2 class="section-title">合作项目</h2>
+                <div class="contact-cards">
+                    <div class="card single-card">
+                        <h3 class="contact-title">与科技创新的合作</h3>
+                        <p class="contact-detail">请把你的想法发给官方客服（科技创新星球），并请标注"合作"</p>
+                    </div>
+                    <div class="card single-card">
+                        <h3 class="contact-title">404 社区文章投稿</h3>
+                        <p class="contact-detail">请将文章发送至微信公众号"科技创新星球"（官方客服），第一行注明：404文章投稿+文章标题+社区账号+社区ID，第二行开始为正文，最后请附上该文章封面否则默认使用404社区的logo。审核通过且被发表的文章会在最后用卡片为该文章作者的账号打广告哦（ps：没有稿费）。文章主题不限。快来投稿吧！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="service" class="page service-page" style="display: none;">
+            <div class="cards-container">
+                <h2 class="section-title">实用工具</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="service-card">
+                            <h2 class="service-title">Base64 编码与解码</h2>
+                            <div class="textarea-container">
+                                <textarea class="service-textarea" id="inputText" placeholder="请输入需要编码或解码的内容..."></textarea>
+                            </div>
+                            <div class="service-buttons">
+                                <button class="service-btn encode-btn" id="encodeBtn">编码为 Base64</button>
+                                <button class="service-btn decode-btn" id="decodeBtn">解码 Base64</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <div class="card-dot"></div>
+                            </div>
+                            <h3 class="card-title">科技创新的Scratch积木扩展开发教程</h3>
+                        </div>
+                        <p class="card-note">教你如何开发自己的Scratch积木扩展</p>
+                        <a href="https://kejicx.github.io/teach/" target="_blank" class="service-btn encode-btn external-link" style="display: block; text-align: center; margin-top: 16px;">前往教程</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="about" class="page about-page" style="display: none;">
+            <div class="cards-container">
+                <h2 class="section-title">关于</h2>
+                <div class="contact-cards">
+                    <div class="card single-card">
+                        <h3 class="contact-title">关于科技创新</h3>
+                        <p class="contact-detail">创建时间：2023.5.4</p>
+                        <p class="contact-detail">创建者：Morgan</p>
+                        <p class="contact-detail">团队人数：1人</p>
+                    </div>
+                    <div class="card single-card">
+                        <h3 class="contact-title">关于Morgan</h3>
+                        <p class="contact-detail">住址：浙江杭州</p>
+                        <p class="contact-detail">星座：巨蟹座</p>
+                        <p class="contact-detail">爱好：编程、数码、设计等</p>
+                        <p class="contact-detail">Crush：yjt</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>© 2025 科技创新官网. 保留所有权利.</p>
+            <div class="footer-links">
+                <a href="https://ccw.site/s/233J3" target="_blank" class="footer-link external-link">科技创新的主页↗</a>
+                <a href="https://ccw.site/s/bL4gnr" target="_blank" class="footer-link external-link">404 社区↗</a>
+            </div>
+            <div class="version-log" id="versionLog">版本更新日志</div>
+        </div>
+    </footer>
+    <!-- 液态玻璃弹窗 -->
+    <div class="modal-overlay" id="versionModal">
+        <div class="modal">
+            <div class="modal-close" id="modalClose">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+            <h3 class="modal-title">版本更新日志</h3>
+            <div class="modal-content">
+                <p>版本号：4.1.10</p>
+                <p>更新内容：修复了已知问题，优化了部分细节。</p>
+            </div>
+        </div>
+    </div>
+    <!-- 跳转确认弹窗 -->
+    <div class="modal-overlay" id="redirectModal">
+        <div class="modal">
+            <div class="modal-close" id="redirectModalClose">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </div>
+            <h3 class="modal-title">跳转确认</h3>
+            <div class="modal-content">
+                <p>即将跳转至：<span id="redirectTarget"></span></p>
+            </div>
+            <div class="service-buttons" style="margin-top: 24px;">
+                <button class="service-btn encode-btn" id="redirectConfirm">跳转</button>
+                <button class="service-btn decode-btn" id="redirectCancel">取消</button>
+            </div>
+        </div>
+    </div>
+    <div class="copy-notification" id="copyNotification">已复制到剪贴板</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 页面切换
+            const navItems = document.querySelectorAll('.nav-item');
+            const pages = document.querySelectorAll('.page');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 更新导航激活状态
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    // 隐藏所有页面
+                    pages.forEach(page => {
+                        page.style.display = 'none';
+                        page.classList.remove('active');
+                    });
+                    // 显示选中的页面
+                    const pageId = this.getAttribute('data-page');
+                    const targetPage = document.getElementById(pageId);
+                    targetPage.style.display = 'block';
+                    // 添加过渡效果
+                    setTimeout(() => {
+                        targetPage.classList.add('active');
+                    }, 10);
+                });
+            });
+            // 悬浮导航栏效果
+            const nav = document.querySelector('.sticky-nav');
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > 20) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+                lastScrollTop = scrollTop;
+            });
+            // 版本更新日志弹窗
+            const versionLog = document.getElementById('versionLog');
+            const versionModal = document.getElementById('versionModal');
+            const modalClose = document.getElementById('modalClose');
+            versionLog.addEventListener('click', function() {
+                versionModal.classList.add('active');
+                setTimeout(() => {
+                    versionModal.querySelector('.modal').classList.add('active');
+                }, 10);
+            });
+            function closeModal() {
+                versionModal.querySelector('.modal').classList.remove('active');
+                setTimeout(() => {
+                    versionModal.classList.remove('active');
+                }, 300);
+            }
+            modalClose.addEventListener('click', closeModal);
+            versionModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            // 跳转确认弹窗
+            const redirectModal = document.getElementById('redirectModal');
+            const redirectModalClose = document.getElementById('redirectModalClose');
+            const redirectTarget = document.getElementById('redirectTarget');
+            const redirectConfirm = document.getElementById('redirectConfirm');
+            const redirectCancel = document.getElementById('redirectCancel');
+            let pendingRedirectUrl = null;
+            function closeRedirectModal() {
+                redirectModal.querySelector('.modal').classList.remove('active');
+                setTimeout(() => {
+                    redirectModal.classList.remove('active');
+                }, 300);
+                pendingRedirectUrl = null;
+            }
+            redirectModalClose.addEventListener('click', closeRedirectModal);
+            redirectCancel.addEventListener('click', closeRedirectModal);
+            redirectConfirm.addEventListener('click', function() {
+                if (pendingRedirectUrl) {
+                    window.location.href = pendingRedirectUrl;
+                }
+                closeRedirectModal();
+            });
+            redirectModal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeRedirectModal();
+                }
+            });
+            // 为所有外部链接添加跳转确认
+            const externalLinks = document.querySelectorAll('.external-link');
+            externalLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // 获取链接文本（去掉箭头符号）
+                    let linkText = this.textContent.replace('↗', '').trim();
+                    if (linkText === '') {
+                        // 如果是导航栏中的链接，使用href属性
+                        linkText = this.href;
+                    }
+                    redirectTarget.textContent = linkText;
+                    pendingRedirectUrl = this.href;
+                    redirectModal.classList.add('active');
+                    setTimeout(() => {
+                        redirectModal.querySelector('.modal').classList.add('active');
+                    }, 10);
+                });
+            });
+            // Base64 服务功能
+            const inputText = document.getElementById('inputText');
+            const resultText = document.getElementById('resultText');
+            const encodeBtn = document.getElementById('encodeBtn');
+            const decodeBtn = document.getElementById('decodeBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const copyNotification = document.getElementById('copyNotification');
+            // 编码功能
+            encodeBtn.addEventListener('click', function() {
+                const text = inputText.value;
+                if (text) {
+                    try {
+                        const encoded = btoa(unescape(encodeURIComponent(text)));
+                        alert("编码结果已复制到剪贴板: " + encoded);
+                        navigator.clipboard.writeText(encoded);
+                    } catch (e) {
+                        alert('编码失败：无效字符');
+                    }
+                }
+            });
+            // 解码功能
+            decodeBtn.addEventListener('click', function() {
+                const text = inputText.value;
+                if (text) {
+                    try {
+                        const decoded = decodeURIComponent(escape(atob(text)));
+                        alert("解码结果已复制到剪贴板: " + decoded);
+                        navigator.clipboard.writeText(decoded);
+                    } catch (e) {
+                        alert('解码失败：无效的Base64字符串');
+                    }
+                }
+            });
+            // 初始页面显示
+            setTimeout(() => {
+                document.querySelector('.page.active').classList.add('active');
+            }, 10);
+        });
+    </script>
+</body>
+</html>
